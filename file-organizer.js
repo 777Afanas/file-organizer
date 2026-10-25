@@ -32,17 +32,21 @@ program
     // Створюємо екземпляр класу сканера
     const scanner = new Scanner();
     let processedCount = 0;
+    let totalFiles = 0; // Додаємо змінну для збереження загальної кількості файлів
 
     // Підписуємося на подію початку сканування
     scanner.on("scan-start", (data) => {
       console.log(`\n📂 Scanning: ${data.directory}`);
+      totalFiles = data.totalExpected; // Отримуємо очікувану кількість файлів
     });
 
     // Підписуємося на подію знаходження файлу для оновлення консолі
     scanner.on("file-found", () => {
       processedCount++;
-      // Використовуємо \r для перезапису поточного рядка в консолі
-      process.stdout.write(`\rProcessing... ${processedCount} files found`);
+      // Використовуємо вашу функцію з utils.js для малювання прогрес-бару
+      const bar = drawProgressBar(processedCount, totalFiles, 20);
+      // Виводимо прогрес-бар та лічильник (наприклад: 5/247 files)
+      process.stdout.write(`\rProcessing... ${bar} files`);
     });
 
     // Підписуємося на подію завершення для виводу результатів
@@ -51,7 +55,29 @@ program
       console.log(`----------------------------------------`);
       console.log(`Total files: ${stats.totalFiles}`);
       console.log(`Total size: ${formatSize(stats.totalSize)}`); // Використовуємо utils
-      // Іншу детальну статистику клас Scanner має формувати та передавати в stats
+
+      console.log("\nBy File Type:");
+      for (const [ext, data] of stats.byType.entries()) {
+        console.log(
+          `  ${ext.padEnd(7)} ${data.count} files \t ${formatSize(data.totalSize)}`,
+        );
+      }
+
+      console.log("\nFile Age:");
+      console.log(`  Last 7 days:    ${stats.age.last7} files`);
+      console.log(`  Last 30 days:   ${stats.age.last30} files`);
+      console.log(`  Older than 90:  ${stats.age.older90} files`);
+
+      console.log("\nLargest files:");
+      stats.largestFiles.forEach((file, index) => {
+        console.log(`  ${index + 1}. ${file.path} \t ${formatSize(file.size)}`);
+      });
+
+      if (stats.oldestFile.path) {
+        console.log(
+          `\nOldest file: ${stats.oldestFile.path} (modified ${stats.oldestFile.ageDays} days ago)`,
+        );
+      }
     });
 
     // Запускаємо процес у блоці try/catch для перехоплення системних помилок
