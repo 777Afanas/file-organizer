@@ -136,6 +136,7 @@ program
 
     organizer.on("organize-start", (data) => {
       console.log(`\n📦 Organizing: ${data.source}\nTarget: ${data.target}\n`);
+      console.log(`Creating folders...`);
     });
 
     organizer.on("category-created", (data) => {
@@ -148,14 +149,19 @@ program
       );
     });
 
-    organizer.on("organize-complete", (stats) => {
-      console.log(`\n\n✅ Organization complete!\nSummary:`);
-      // Вивід статистики по категоріях
-    });
-
     try {
-      // Передаємо і вихідну директорію, і цільову (з options.output)
-      await organizer.organize(directory, options.output);
+      const stats = await organizer.organize(directory, options.output);
+      console.log(`\n\n✅ Organization complete!\nSummary:`); // Додано \n\n щоб не злиплося з прогрес-баром
+
+      for (const [category, data] of Object.entries(stats.categories)) {
+        console.log(
+          `  ${category.padEnd(10)}: ${String(data.count).padStart(3)} files → Organized/${category}/`,
+        );
+      }
+
+      console.log(
+        `\nTotal copied: ${stats.totalFiles} files (${formatSize(stats.totalSize)})`,
+      );
     } catch (error) {
       handleError(error, directory);
     }

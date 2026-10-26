@@ -8,7 +8,7 @@
     "generate-test": "node generate-test-files.js",
     "dev:scan": "nodemon file-organizer.js scan ./test-directory",
     "dev:duplicates": "nodemon file-organizer.js duplicates ./test-directory",
-    "dev:organize": "nodemon file-organizer.js organize ./test-directory --output ./Organized",
+    "dev:organize": "node file-organizer.js organize ./test-directory --output ./Organized",
     "dev:cleanup": "nodemon file-organizer.js cleanup ./test-directory --older-than 90"
   },
   "keywords": [],
