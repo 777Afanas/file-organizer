@@ -105,7 +105,7 @@ program
     finder.on("file-processed", (data) => {
       // data має містити current / total для drawProgressBar
       process.stdout.write(
-        `\rCalculating hashes... ${drawProgressBar(data.current, data.total)}`,
+        `\rCalculating hashes... ${drawProgressBar(data.current, data.total)} files`,
       );
     });
 
