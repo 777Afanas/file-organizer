@@ -191,11 +191,25 @@ program
       );
     });
 
+    // cleanup.on("cleanup-complete", (results) => {
+    //   if (options.confirm) {
+    //     // Змінено текст для ідеального збігу з ТЗ:
+    //     console.log(`\n\n✅ Cleanup complete!`);
+    //     console.log(
+    //       `Deleted: ${results.deletedCount} files (${formatSize(results.freedSize)} freed)`,
+    //     );
+    //   } else {
+    //     console.log(`\n⚠️  DRY RUN MODE: No files were deleted.`);
+    //     console.log(`To actually delete these files, run with --confirm flag.`);
+    //   }
+    // });
+
     cleanup.on("cleanup-complete", (results) => {
-      // Якщо користувач передав прапорець -c або --confirm
       if (options.confirm) {
+        console.log(`\n\n✅ Cleanup complete!`);
+        // Додано форматування звільненого місця
         console.log(
-          `\n\n✅ Cleanup complete! Deleted: ${results.deletedCount} files.`,
+          `Deleted: ${results.deletedCount} files (${formatSize(results.freedSize)} freed)`,
         );
       } else {
         console.log(`\n⚠️  DRY RUN MODE: No files were deleted.`);
